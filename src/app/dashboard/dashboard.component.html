@@ -1,0 +1,92 @@
+<div class="spinner-container">
+  <mat-spinner *ngIf="loading$ | async" mode="indeterminate"></mat-spinner>
+</div>
+<div class="table">
+  <div class="button-table-action">
+  <button class="add-button" (click)="addOrEdit()" mat-raised-button color="primary">Dodaj servis</button>
+  <button class="add-button" (click)="dateFilter()" mat-raised-button color="primary">{{showToday ? 'Prikaži sve' : 'Prikaži danas'}}</button>
+</div>
+  <mat-table [dataSource]="showToday ? filteredTasks : tasks" matSort matSortActive="date" matSortDirection="asc" class="mat-elevation-z8">
+    
+    <!-- <ng-container matColumnDef="select">
+      <mat-header-cell *matHeaderCellDef>A da</mat-header-cell>
+      <mat-header-cell mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="changeStatus(row)"
+        [indeterminate]="row.status == 'U tijeku' ? true : false"
+        [checked]="row.status == 'Završeno'">
+        </mat-checkbox>
+      </mat-header-cell>
+    </ng-container> -->
+    
+    <!-- Position Column -->
+    <ng-container matColumnDef="id">
+      <mat-header-cell *matHeaderCellDef>No.</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="title">
+      <mat-header-cell *matHeaderCellDef>Naziv</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.title}} </mat-cell>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="brand">
+      <mat-header-cell *matHeaderCellDef>Marka</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.brand}} </mat-cell>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="model">
+      <mat-header-cell *matHeaderCellDef>Model</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.model}} </mat-cell>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="licensePlate">
+      <mat-header-cell *matHeaderCellDef>Registracija</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.licensePlate}} </mat-cell>
+    </ng-container>
+
+    <!-- Weight Column -->
+    <ng-container matColumnDef="job">
+      <mat-header-cell *matHeaderCellDef>Opis posla</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.job}} </mat-cell>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="date">
+      <mat-header-cell *matHeaderCellDef id="date" mat-sort-header>Datum</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.date |date: 'dd/MM/yyyy'}} </mat-cell>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="description">
+      <mat-header-cell *matHeaderCellDef>Opis</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.description}} </mat-cell>
+    </ng-container>
+
+ <!-- Name Column -->
+    <ng-container matColumnDef="status">
+      <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <button mat-flat-button (click)="changeStatus(element)" style="background-color: transparent;">{{element.status}} </button></mat-cell>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef>Akcije</mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <button class="edit-button" mat-raised-button color="accent" (click)="addOrEdit(row)">Uredi</button>
+        <button class="delete-button" mat-raised-button color="warn" (click)="deleteTask(row)">Izbriši</button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"
+     [ngClass]="{'today-color': row.date == today, 'in-progress':row.status == 'U tijeku', 'done':row.status == 'Završeno'}"></mat-row>
+  </mat-table>
+  <div class="table-description">
+  <h3>{{showToday ? 'Pregled za danas' : 'Pregled svih servisa'}}</h3>
+</div>
+</div>

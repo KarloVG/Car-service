@@ -1,0 +1,87 @@
+<div class="spinner-container">
+    <mat-spinner *ngIf="loading$ | async" mode="indeterminate"></mat-spinner>
+</div>
+<form [formGroup]='taskGroup' (ngSubmit)="onSubmit()">
+    <h2 mat-dialog-title>{{row ? 'Uređivanje servisa' : 'Dodavanje novog servisa'}}</h2>
+    <mat-dialog-content>
+        <div class="input-field">
+            <div>
+                <mat-form-field style="width: 100%;">
+                    <mat-label>Naziv</mat-label>
+                    <input required matInput formControlName="title">
+                </mat-form-field>
+            </div>
+            <div>
+                <mat-form-field style="width: 100%;">
+                    <mat-label>Marka</mat-label>
+                    <select matNativeControl formControlName="brand" name="car">
+                        <option value="" disabled selected></option>
+                        <option *ngFor="let car of cars" [value]="car.brand">
+                            {{car.brand}}
+                        </option>
+                    </select>
+                </mat-form-field>
+            </div>
+
+            <div>
+                <mat-form-field>
+                    <mat-label>Model</mat-label>
+                    <mat-select [disabled]="!brand.value" formControlName="model">
+                        <mat-option value="" disabled selected>
+                        </mat-option>
+                        <mat-option *ngFor="let model of models" [value]="model.model">{{model.model}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="input-field">
+            <div>
+                <mat-form-field>
+                    <mat-label>Registracijska oznaka</mat-label>
+                    <input required oninput="this.value = this.value.toUpperCase()" maxLength="8" minLength="6" matInput
+                        type="text" formControlName="licensePlate">
+                </mat-form-field>
+                <div *ngIf="licensePlate?.errors?.['pattern']">
+                    Example: ZG0000ZG
+                </div>
+            </div>
+            <div>
+                <mat-form-field>
+                    <mat-label>Opis posla</mat-label>
+                    <input required matInput type="text" formControlName="job">
+                </mat-form-field>
+            </div>
+            <div>
+                <mat-form-field>
+                    <mat-label>Datum</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="date">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <!-- <ngx-mat-datetime-picker #picker></ngx-mat-datetime-picker> -->
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="input-field">
+        <div>
+            <mat-form-field>
+                <mat-label>Dodatan opis</mat-label>
+                <textarea matInput type="textarea" formControlName="description"></textarea>
+            </mat-form-field>
+        </div>
+        <div>
+                <mat-button-toggle-group formControlName="status" aria-label="Font Style">
+                    <mat-button-toggle value="U dolasku">U dolasku</mat-button-toggle>
+                    <mat-button-toggle [ngClass]="{'in-progress': status.value == 'U tijeku'}" value="U tijeku">U tijeku</mat-button-toggle>
+                    <mat-button-toggle [ngClass]="{'done': status.value == 'Završeno'}" value="Završeno">Završeno</mat-button-toggle>
+                  </mat-button-toggle-group>
+        </div>
+    </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <div class="button-action">
+            <button mat-raised-button mat-dialog-close>Odustani</button>
+            <button mat-raised-button [color]="row ? 'accent' : 'primary'" type="submit">{{row ? 'Uredi' :
+                'Dodaj'}}</button>
+        </div>
+    </mat-dialog-actions>
+</form>

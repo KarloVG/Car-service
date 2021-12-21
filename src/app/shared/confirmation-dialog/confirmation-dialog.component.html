@@ -1,0 +1,9 @@
+<mat-dialog-content>
+	<h3>
+		Izbriši {{row.title}}?
+    </h3>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+    <button mat-raised-button mat-dialog-close tabindex="-1">Odustani</button>
+	<button mat-raised-button color="warn" (click)="deleteTask(row)" tabindex="1">Izbriši</button>
+</mat-dialog-actions>

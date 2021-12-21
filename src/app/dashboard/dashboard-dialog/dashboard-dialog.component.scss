@@ -1,0 +1,29 @@
+.button-action{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.input-field{
+    display: flex;
+    place-content: space-between;
+}
+
+.spinner-container{ 
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+  
+}
+
+.in-progress{
+    background-color: cornflowerblue;
+}
+
+.done{
+    background-color: lightgreen;
+}
+
