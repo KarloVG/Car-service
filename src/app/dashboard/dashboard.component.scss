@@ -37,10 +37,16 @@
 }
 
 .table-description{
-    text-align-last: end;
+    display: flex;
+    justify-content: space-between;
 }
 
 .button-table-action{
+    display: flex;
+    // justify-content: space-between;
+}
+
+.action{
     display: flex;
     justify-content: space-between;
 }

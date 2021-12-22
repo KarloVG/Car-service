@@ -2,9 +2,12 @@
   <mat-spinner *ngIf="loading$ | async" mode="indeterminate"></mat-spinner>
 </div>
 <div class="table">
+  <div class="action">
+  <h3>{{showToday ? 'Pregled za danas' : 'Pregled svih servisa'}}</h3>
   <div class="button-table-action">
   <button class="add-button" (click)="addOrEdit()" mat-raised-button color="primary">Dodaj servis</button>
   <button class="add-button" (click)="dateFilter()" mat-raised-button color="primary">{{showToday ? 'Prikaži sve' : 'Prikaži danas'}}</button>
+</div>
 </div>
   <mat-table [dataSource]="showToday ? filteredTasks : tasks" matSort matSortActive="date" matSortDirection="asc" class="mat-elevation-z8">
     
@@ -86,7 +89,5 @@
     <mat-row *matRowDef="let row; columns: displayedColumns;"
      [ngClass]="{'today-color': row.date == today, 'in-progress':row.status == 'U tijeku', 'done':row.status == 'Završeno'}"></mat-row>
   </mat-table>
-  <div class="table-description">
-  <h3>{{showToday ? 'Pregled za danas' : 'Pregled svih servisa'}}</h3>
-</div>
+  <h3>Ukupno {{showToday ? filteredTasks.data.length : tasks.data.length}}</h3>
 </div>
