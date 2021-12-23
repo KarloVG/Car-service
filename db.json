@@ -1,6 +1,7 @@
 {
   "tasks": [
     {
+      "id": 1,
       "title": "Servis",
       "brand": "Renault",
       "model": "Clio",
@@ -8,7 +9,7 @@
       "date": "2021-12-21T23:00:00.000Z",
       "licensePlate": "ZG0123BK",
       "description": "",
-      "id": 1
+      "status": "U dolasku"
     },
     {
       "id": 2,
@@ -18,49 +19,41 @@
       "job": "Zupčasti remen + uljee",
       "date": "2021-12-22T23:00:00.000Z",
       "licensePlate": "ZG2245DA",
-      "description": ""
-    },
-    {
-      "title": "dada",
-      "brand": "Alfa Romeo",
-      "model": "156",
-      "job": "dad",
-      "date": "2021-12-20T23:00:00.000Z",
-      "licensePlate": "DA4156DA",
       "description": "",
-      "id": 3
+      "status": "U dolasku"
     },
     {
+      "id": 5,
       "title": "Servis",
       "brand": "BMW",
       "model": "Serie 1",
       "job": "Seeee",
-      "date": "2021-12-21T23:00:00.000Z",
+      "date": "2021-12-22T23:00:00.000Z",
       "licensePlate": "DA225IH",
       "description": "",
-      "id": 5
+      "status": "U dolasku"
     },
     {
       "id": 6,
-      "title": "TEST",
-      "brand": "BMW",
-      "model": "Serie 1",
-      "job": "dad",
-      "date": "2021-12-20T23:00:00.000Z",
-      "licensePlate": "DA4654DA",
+      "title": "Zamjena diskova",
+      "brand": "Nissan",
+      "model": "Murano",
+      "job": "",
+      "date": "2021-12-29T23:00:00.000Z",
+      "licensePlate": "ZG4567DA",
       "description": "",
       "status": "U dolasku"
     },
     {
-      "id": 7,
-      "title": "dad",
-      "brand": "Alfa Romeo",
-      "model": "156",
-      "job": "dad",
-      "date": "2021-12-20T23:00:00.000Z",
-      "licensePlate": "DA4156DA",
+      "title": "Servis",
+      "brand": "Mazda",
+      "model": "323",
+      "job": "",
+      "date": "2021-12-22T23:00:00.000Z",
+      "licensePlate": "DA888DA",
       "description": "",
-      "status": "U dolasku"
+      "status": "U dolasku",
+      "id": 7
     }
   ]
 }

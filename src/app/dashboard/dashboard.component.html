@@ -3,10 +3,10 @@
 </div>
 <div class="table">
   <div class="action">
-  <h3>{{showToday ? 'Pregled za danas' : 'Pregled svih servisa'}}</h3>
+  <h2>{{showToday ? 'Pregled za danas' : 'Pregled svih servisa'}}</h2>
   <div class="button-table-action">
   <button class="add-button" (click)="addOrEdit()" mat-raised-button color="primary">Dodaj servis</button>
-  <button class="add-button" (click)="dateFilter()" mat-raised-button color="primary">{{showToday ? 'Prikaži sve' : 'Prikaži danas'}}</button>
+  <button class="add-button" (click)="dateFilter($event)" mat-raised-button color="primary">{{showToday ? 'Prikaži sve' : 'Prikaži danas'}}</button>
 </div>
 </div>
   <mat-table [dataSource]="showToday ? filteredTasks : tasks" matSort matSortActive="date" matSortDirection="asc" class="mat-elevation-z8">
@@ -87,7 +87,10 @@
 
     <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"
-     [ngClass]="{'today-color': row.date == today, 'in-progress':row.status == 'U tijeku', 'done':row.status == 'Završeno'}"></mat-row>
+     [ngClass]="{'today-color': row.date == today,
+      'in-progress':row.status == 'U tijeku',
+       'done':row.status == 'Završeno',
+      'expired':row.date < today}"></mat-row>
   </mat-table>
   <h3>Ukupno {{showToday ? filteredTasks.data.length : tasks.data.length}}</h3>
 </div>

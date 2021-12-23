@@ -85,7 +85,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, AfterContentIn
     this.tasksubject$.next(true);
   }
 
-  dateFilter(){
+  dateFilter(event: any){
+    console.log(event)
     this.showToday = !this.showToday
   }
 
