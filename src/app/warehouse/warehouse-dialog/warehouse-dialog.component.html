@@ -1,0 +1,50 @@
+<!-- <form (ngSubmit)="onSubmit()" #sampleForm="ngForm">
+    <div>
+            <mat-form-field>
+                <mat-label>Naziv artikla</mat-label>
+                <input matInput type="text" name="name" [(ngModel)]="warehouseItems.name" required>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Broj komada</mat-label>
+                <input matInput type="number" name="pieces" [(ngModel)]="warehouseItems.pieces">
+            </mat-form-field>
+    </div>
+    <button [disabled]="!sampleForm.valid" type="submit" mat-raised-button>Spremi</button>
+</form>
+ -->
+ <!-- <div class="spinner-container">
+    <mat-spinner *ngIf="loading$ | async" mode="indeterminate"></mat-spinner>
+</div> -->
+<form #warehouseForm="ngForm" (ngSubmit)="onSubmit()">
+    <h2 mat-dialog-title>{{row ? 'Uređivanje artikla' : 'Dodavanje novog artikla'}}</h2>
+    <mat-dialog-content>
+        <div class="input-field">
+            <div>
+                <mat-form-field>
+                    <mat-label>Naziv</mat-label>
+                    <input required minlength="4" matInput type="text" name="name" #name="ngModel" [(ngModel)]="warehouseItems.name" required>
+                </mat-form-field>
+            </div>
+            <div *ngIf="name.invalid && (name.dirty || name.touched)">
+                Naziv je obavezan
+            </div>
+
+        </div>
+        <div class="input-field">
+            <div>
+                <mat-form-field>
+                    <mat-label>Registracijska oznaka</mat-label>
+                    <input required matInput oninput="this.value = this.value.toUpperCase()" 
+                    type="number" name="pieces" [(ngModel)]="warehouseItems.pieces">
+                </mat-form-field>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <div class="button-action">
+            <button mat-raised-button mat-dialog-close>Odustani</button>
+            <button mat-raised-button [disabled]="name.invalid" [color]="row ? 'accent' : 'primary'" type="submit">{{row ? 'Uredi' :
+                'Dodaj'}}</button>
+        </div>
+    </mat-dialog-actions>
+</form>

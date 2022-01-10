@@ -14,12 +14,12 @@
             <div>
                 <mat-form-field style="width: 100%;">
                     <mat-label>Marka</mat-label>
-                    <select matNativeControl formControlName="brand" name="car">
-                        <option value="" disabled selected></option>
-                        <option *ngFor="let car of cars" [value]="car.brand">
+                    <mat-select matNativeControl formControlName="brand" name="car">
+                        <mat-option value="" disabled selected></mat-option>
+                        <mat-option *ngFor="let car of cars" [value]="car.brand">
                             {{car.brand}}
-                        </option>
-                    </select>
+                        </mat-option>
+                    </mat-select>
                 </mat-form-field>
             </div>
 

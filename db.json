@@ -9,29 +9,7 @@
       "date": "2021-12-21T23:00:00.000Z",
       "licensePlate": "ZG0123BK",
       "description": "",
-      "status": "U dolasku"
-    },
-    {
-      "id": 2,
-      "title": "Veliki servis",
-      "brand": "Renault",
-      "model": "Kangoo",
-      "job": "Zupčasti remen + uljee",
-      "date": "2021-12-22T23:00:00.000Z",
-      "licensePlate": "ZG2245DA",
-      "description": "",
-      "status": "U dolasku"
-    },
-    {
-      "id": 5,
-      "title": "Servis",
-      "brand": "BMW",
-      "model": "Serie 1",
-      "job": "Seeee",
-      "date": "2021-12-22T23:00:00.000Z",
-      "licensePlate": "DA225IH",
-      "description": "",
-      "status": "U dolasku"
+      "status": "Završeno"
     },
     {
       "id": 6,
@@ -45,15 +23,27 @@
       "status": "U dolasku"
     },
     {
-      "title": "Servis",
-      "brand": "Mazda",
-      "model": "323",
-      "job": "",
-      "date": "2021-12-22T23:00:00.000Z",
-      "licensePlate": "DA888DA",
+      "title": "Pregled",
+      "brand": "Alfa Romeo",
+      "model": "156",
+      "job": "PRegled",
+      "date": "2022-01-02T23:00:00.000Z",
+      "licensePlate": "ZG123DA",
       "description": "",
       "status": "U dolasku",
       "id": 7
+    }
+  ],
+  "items": [
+    {
+      "id": 1,
+      "name": "Oprug2",
+      "pieces": 2
+    },
+    {
+      "name": "dadd",
+      "pieces": 231313,
+      "id": 2
     }
   ]
 }

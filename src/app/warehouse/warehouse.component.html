@@ -1,0 +1,44 @@
+<!-- <div class="spinner-container">
+    <mat-spinner *ngIf="loading$ | async" mode="indeterminate"></mat-spinner>
+  </div> -->
+  <div class="table">
+    <div class="action">
+    <h2>Pregled svih artikala</h2>
+    <button class="add-button" (click)="addOrEdit()" mat-raised-button color="primary">Dodaj artikl</button>
+  </div>
+    <mat-table [dataSource]="items" matSort class="mat-elevation-z8">
+      
+      
+      <!-- Position Column -->
+      <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef>No.</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+      </ng-container>
+  
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef>Naziv</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+      </ng-container>
+  
+      <!-- Name Column -->
+      <ng-container matColumnDef="pieces">
+        <mat-header-cell *matHeaderCellDef>Komada</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.pieces}} </mat-cell>
+      </ng-container>
+  
+  
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef>Akcije</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <button class="edit-button" mat-raised-button color="accent" (click)="addOrEdit(row)">Uredi</button>
+          <button class="delete-button" mat-raised-button color="warn" (click)="deleteTask(row)">Izbriši</button>
+        </mat-cell>
+      </ng-container>
+  
+      <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <h3>Ukupno {{items.data.length}}</h3>
+  </div>

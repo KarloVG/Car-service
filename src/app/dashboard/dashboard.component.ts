@@ -1,10 +1,12 @@
 import { DatePipe } from '@angular/common';
 import { AfterContentInit, AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { BehaviorSubject, catchError, finalize, Subject, take } from 'rxjs';
 import { ConfirmationDialogComponent } from '../shared/confirmation-dialog/confirmation-dialog.component';
+import { SpinnerComponent } from '../shared/content-layout/spinner/spinner.component';
+import { SpinnerService } from '../shared/services/spinner.service';
 import { DashboardColumns } from './columns/dashboard-columns';
 import { DashboardDialogComponent } from './dashboard-dialog/dashboard-dialog.component';
 import { ITask } from './interface/task';
@@ -55,7 +57,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, AfterContentIn
 
   constructor(
     private _dashboardService: DashboardService,
-    private _matDialog: MatDialog
+    private _matDialog: MatDialog,
+    private _spinnerService: SpinnerService,
   ) { }
 
   ngOnInit(): void {
@@ -63,9 +66,9 @@ export class DashboardComponent implements OnInit, AfterViewInit, AfterContentIn
     // this.today = new Date(this.todaysDate.getFullYear(), this.todaysDate.getMonth(), this.todaysDate.getDate(), 0,0,0).toISOString()
     console.log(this.today)
     this.tasksubject$.subscribe(res => {
-      this.loadingSubject.next(true)
+      this._spinnerService.spinnerToggle(true)
       this._dashboardService.getTasks().pipe(
-        finalize(() => this.loadingSubject.next(false))
+        finalize(() => this._spinnerService.spinnerToggle(false))
       ).subscribe(data => {
         this.tasks.data = data;
         this.filteredTasks.data = this.tasks.data.filter(a => this.today == a.date)
@@ -78,7 +81,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, AfterContentIn
 
   ngAfterViewInit(): void {
     // this.tasksubject$.next(true)
-    console.log(this.sort)
   }
 
   ngAfterContentInit(){
@@ -86,18 +88,17 @@ export class DashboardComponent implements OnInit, AfterViewInit, AfterContentIn
   }
 
   dateFilter(event: any){
-    console.log(event)
     this.showToday = !this.showToday
   }
 
   changeStatus(a: any){
-    this.loadingSubject.next(true);
+    this._spinnerService.spinnerToggle(true)
     if(a.status == 'U dolasku'){
       a.status = 'U tijeku'
       this._dashboardService.editTask(a).pipe(
         take(1),
         catchError(error => error),
-        finalize(() => this.loadingSubject.next(false))
+        finalize(() => this._spinnerService.spinnerToggle(false))
       ).subscribe()
     }
     else if(a.status == 'U tijeku'){
@@ -105,7 +106,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, AfterContentIn
       this._dashboardService.editTask(a).pipe(
         take(1),
         catchError(error => error),
-        finalize(() => this.loadingSubject.next(false))
+        finalize(() => this._spinnerService.spinnerToggle(false))
       ).subscribe()
     }
     else{
@@ -113,7 +114,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, AfterContentIn
       this._dashboardService.editTask(a).pipe(
         take(1),
         catchError(error => error),
-        finalize(() => this.loadingSubject.next(false))
+        finalize(() => this._spinnerService.spinnerToggle(false))
       ).subscribe()
     }
   }
@@ -126,7 +127,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, AfterContentIn
       data: row ? row : null
     })
   dialogRef.afterClosed().subscribe(a => {
-     this.loadingSubject.next(true);
+    this._spinnerService.spinnerToggle(true)
      this.tasksubject$.next(true);
    })
   }
@@ -137,15 +138,14 @@ export class DashboardComponent implements OnInit, AfterViewInit, AfterContentIn
       data: row
     })
     dialogRef.afterClosed().subscribe(a => {
-      this.loadingSubject.next(true);
-      this.tasksubject$.next(true);
+      this._spinnerService.spinnerToggle(true)
+      this._dashboardService.deleteTask(row).pipe(
+        take(1),
+        catchError(error => error),
+        finalize(() => this.tasksubject$.next(true))
+      ).subscribe()
     })
-    // this.loadingSubject.next(true);
-    // this._dashboardService.deleteTask(row).pipe(
-    //   take(1),
-    //   catchError(error => error),
-    //   finalize(() => this.tasksubject$.next(true))
-    // ).subscribe()
+
   }
 
 }

@@ -22,10 +22,7 @@ export class ConfirmationDialogComponent implements OnInit {
   }
 
   deleteTask(row: ITask){
-    this._dashboardService.deleteTask(row).pipe(
-      take(1),
-      catchError(error => error),
-      finalize(() => this._dialog.close())
-    ).subscribe()
+      this._dialog.close()
+
   }
 }

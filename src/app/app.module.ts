@@ -12,10 +12,9 @@ import { FooterComponent } from './shared/content-layout/footer/footer.component
 import { HeaderComponent } from './shared/content-layout/header/header.component';
 import { SidebarComponent } from './shared/content-layout/sidebar/sidebar.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { DashboardModule } from './dashboard/dashboard.module';
 import { ConfirmationDialogComponent } from './shared/confirmation-dialog/confirmation-dialog.component';
-import { MAT_DATE_FORMATS } from '@angular/material/core';
-import { DATE_FORMAT } from './shared/date-format';
+import { ChangeColorDirective } from './dashboard/directives/change-color.directive';
+import { SpinnerComponent } from './shared/content-layout/spinner/spinner.component';
 
 
 @NgModule({
@@ -26,7 +25,9 @@ import { DATE_FORMAT } from './shared/date-format';
     SidebarComponent,
     SidebarMenuComponent,
     DashboardComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    ChangeColorDirective,
+    SpinnerComponent
   ],
   imports: [
     BrowserModule,
