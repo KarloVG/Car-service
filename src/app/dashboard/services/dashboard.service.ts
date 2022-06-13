@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, tap } from 'rxjs';
-import { ICar } from '../interface/car';
+import { from, map, Observable } from 'rxjs';
 import { IModel } from '../interface/model';
 import { ITask } from '../interface/task';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { IBrand } from '../interface/brand';
+import { IStatus } from '../interface/status';
 
 @Injectable({
   providedIn: 'root'
@@ -13,52 +15,35 @@ export class DashboardService {
   private readonly CONTROLLER_NAME = 'tasks'
 
   constructor(
-    private _http: HttpClient
+    private _http: HttpClient,
+    private _firestore: AngularFirestore
   ) { }
 
     getTasks(): Observable<any>{
-      const url: string = 'http://localhost:3000/tasks';
-      console.log(url)
-      return this._http.get<any>(url).pipe(
-        map(res => res)
-      )
+      return this._firestore.collection('tasks').snapshotChanges();
     }
 
     addTask(taskRequest: ITask): Observable<any>{
-      console.log('add task')
-      const url = 'http://localhost:3000/tasks';
-      return this._http.post<any>(url,taskRequest).pipe(
-        map(res => res),
-        catchError(error => error)
-      )
+      return from(this._firestore.collection('tasks').add(taskRequest));
     }
 
     editTask(taskRequest: ITask): Observable<any>{
-      const url = 'http://localhost:3000/tasks' + '/' + taskRequest.id;
-      return this._http.put<any>(url,taskRequest).pipe(
-        map(res => res),
-        catchError(error => error)
-      )
+      return from(this._firestore.collection('tasks').doc(taskRequest.id).update(taskRequest));
     }
 
-    deleteTask(task: ITask): Observable<any>{
-      const url = 'http://localhost:3000/tasks' + '/' + task.id;
-      return this._http.delete<any>(url).pipe(
-        catchError(error => error)
-      )
+    editStatus(taskRequest: IStatus): Observable<any>{
+      return from(this._firestore.collection('tasks').doc(taskRequest.id.toString()).update({status: taskRequest.status}))
     }
 
-    getAllCars(): Observable<ICar[]>{
-      const url = 'https://the-vehicles-api.herokuapp.com/brands';
-      return this._http.get<ICar[]>(url).pipe(
-        map(res => res)
-      )
+    deleteTask(id: string): Observable<any>{
+      return from(this._firestore.collection('tasks').doc(id).delete());
     }
 
-    getModelCars(id: number): Observable<IModel[]>{
-      const url = 'https://the-vehicles-api.herokuapp.com/models?brandId=' + id;
-      return this._http.get<IModel[]>(url).pipe(
-        map(res => res)
-      )
+    getBrands(): Observable<any>{
+      return this._firestore.collection('brands').snapshotChanges();
+    }
+
+    getModels(id: string): Observable<any>{
+      return this._firestore.collection('model', ref=> ref.where('brandId', '==', `${id}`)).valueChanges();
     }
 }

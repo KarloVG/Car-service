@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "car-service-b1623": {
+      "hosting": {
+        "proba": [
+          "car-service-b1623"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "car-service-b1623"
+  }
+}

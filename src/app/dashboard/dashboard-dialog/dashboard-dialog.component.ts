@@ -1,16 +1,11 @@
-import { DatePipe, formatDate } from '@angular/common';
-import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import * as moment from 'moment';
-import { BehaviorSubject, catchError, finalize, take, tap } from 'rxjs';
-import { SpinnerComponent } from 'src/app/shared/content-layout/spinner/spinner.component';
-import { SpinnerService } from 'src/app/shared/services/spinner.service';
-import { ICar } from '../interface/car';
-import { IModel } from '../interface/model';
-import { ITask } from '../interface/task';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { BehaviorSubject, finalize, map } from 'rxjs';
+import { IBrand } from '../interface/brand';
+import { IResponse } from '../interface/response';
 import { DashboardService } from '../services/dashboard.service';
 
 @Component({
@@ -24,29 +19,23 @@ import { DashboardService } from '../services/dashboard.service';
 export class DashboardDialogComponent implements OnInit {
 
   taskGroup!: FormGroup;
-  cars!: ICar[];
-  models!: IModel[];
+  cars!: any;
+  models!: any;
   todaysDate = Date.now();
   loadingSubject = new BehaviorSubject<boolean>(false);
   loading$ = this.loadingSubject.asObservable();
   pipe = new DatePipe('en-US')
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public row: ITask,
+    @Inject(MAT_DIALOG_DATA) public row: any,
     private _formBuilder: FormBuilder,
     private _dialog: MatDialogRef<DashboardDialogComponent>,
     private _dashboardService: DashboardService
   ) { }
 
   ngOnInit(): void {
-    // console.log(formatDate(this.todaysDate[0], 'dd-mm-yyyy', 'fr-FR'))
-    console.log(this.pipe.transform(this.todaysDate, 'dd/MM/yyyy'))
     this.setupFormGroup();
     this.getCarsDropdown();
-    this.brand.valueChanges.subscribe(id => {
-      const carId = this.cars.find(a => id == a.brand)
-      this.getModelDropdown(carId?.id!)
-    })
   }
 
   setupFormGroup() {
@@ -78,46 +67,56 @@ export class DashboardDialogComponent implements OnInit {
   }
 
   getCarsDropdown() {
-    this.loadingSubject.next(true)
-    this._dashboardService.getAllCars().pipe(
-      take(1),
-      finalize(() => {
-        this.loadingSubject.next(false)
-        if(this.row){
-          this.getModelDropdown(this.cars.find(a => this.row.brand == a.brand)?.id!)
+    this._dashboardService.getBrands().pipe(map(data => {
+      return data.map((response: IResponse) => {
+        return {
+          id: response.payload.doc.id,
+          name: response.payload.doc.data().name
         }
       })
-    ).subscribe(cars => {
-      this.cars = cars;
-    })
+    }),
+    ).subscribe(cars => 
+      {
+        this.cars = cars;
+        if(this.row){
+          this.selectedBrand(this.row.brand)
+        }
+      });
+    this.loadingSubject.next(false)
   }
 
-  getModelDropdown(id: number) {
-    this.loadingSubject.next(true)
-    this._dashboardService.getModelCars(id).pipe(
-      take(1),
-      finalize(() => this.loadingSubject.next(false))
-    ).subscribe(models => {
-      this.models = models;
-    })
+  getModelDropdown(id: string) {
+    this._dashboardService.getModels(id).pipe(finalize(() => this.loadingSubject.next(false)))
+    .subscribe(data => this.models = data);
   }
 
+  
+  selectedBrand(brand: IBrand): void {
+    const brandId = this.cars.filter((data: { name: any; }) => data.name == brand)[0].id;
+    this.getModelDropdown(brandId);
+  }
+
+  modifyBrand(){
+    const brandName = this.taskGroup.get('brand')?.value;
+    return this.cars.filter((data: any) => data.name == brandName);
+  }
+
+  modifyDate(){
+    const date = this.taskGroup.get('date')?.value;
+    return date.toDate();
+  }
 
   onSubmit() {
-    console.log(this.taskGroup.value)
-    if (this.row) {
-      this._dashboardService.editTask(this.taskGroup.value).pipe(
-        take(1),
-        catchError(error => error),
-        finalize(() => this._dialog.close())
-      ).subscribe()
+    const dateControl = this.taskGroup.get('date');
+    if (this.row.date != dateControl?.value){
+      dateControl?.setValue(this.modifyDate())
     }
-    else {
-      this._dashboardService.addTask(this.taskGroup.value).pipe(
-        take(1),
-        catchError(error => error),
-        finalize(() => this._dialog.close())
-      ).subscribe()
+    if(this.row){
+      this._dashboardService.editTask(this.taskGroup.value);
+      this._dialog.close();
+    } else {
+      this._dashboardService.addTask(this.taskGroup.value);
+      this._dialog.close();
     }
   }
 

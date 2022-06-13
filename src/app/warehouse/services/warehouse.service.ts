@@ -15,14 +15,12 @@ export class WarehouseService {
 
   getItems(): Observable<any>{
     const url: string = 'http://localhost:3000/items';
-    console.log(url)
     return this._http.get<any>(url).pipe(
       map(res => res)
     )
   }
 
   addItem(itemRequest: IWarehouse): Observable<any> {
-    console.log('add task')
     const url = 'http://localhost:3000/items';
     return this._http.post<any>(url, itemRequest).pipe(
       map(res => res),

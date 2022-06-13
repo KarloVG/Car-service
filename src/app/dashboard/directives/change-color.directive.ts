@@ -16,7 +16,6 @@ export class ChangeColorDirective implements OnInit{
   ) {}
 
   ngOnInit(): void {
-    console.log(this.row)
       if(this.row.date == this.today){
         this.elementRef.nativeElement.style.backgroundColor = 'beige';
       }

@@ -1,17 +1,14 @@
-import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SpinnerService implements OnInit {
+export class SpinnerService {
 
   spinner = new BehaviorSubject<boolean>(false);
 
   constructor() {}
-
-  ngOnInit(){
-  }
 
   spinnerToggle(boolean: boolean){
     this.spinner.next(boolean)

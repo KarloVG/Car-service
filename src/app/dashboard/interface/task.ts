@@ -1,5 +1,5 @@
 export interface ITask{
-    id?: number,
+    id?: number | any,
     title: string,
     brand: string,
     model: string,

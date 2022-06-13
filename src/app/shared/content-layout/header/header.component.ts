@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { ToggleSidebarService } from "../services/toggle-sidebar.service";
 
 
@@ -7,14 +7,11 @@ import { ToggleSidebarService } from "../services/toggle-sidebar.service";
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
 
   constructor(
     private _toggleSidebarService: ToggleSidebarService
   ) { }
-
-  ngOnInit(): void {
-  }
 
   toggleSidebar(){
     this._toggleSidebarService.toggle();

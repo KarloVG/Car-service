@@ -14,10 +14,10 @@
             <div>
                 <mat-form-field style="width: 100%;">
                     <mat-label>Marka</mat-label>
-                    <mat-select matNativeControl formControlName="brand" name="car">
+                    <mat-select matNativeControl formControlName="brand" (selectionChange)="selectedBrand($event.value)" name="car">
                         <mat-option value="" disabled selected></mat-option>
-                        <mat-option *ngFor="let car of cars" [value]="car.brand">
-                            {{car.brand}}
+                        <mat-option *ngFor="let car of cars" [value]="car.name">
+                            {{car.name}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -29,7 +29,7 @@
                     <mat-select [disabled]="!brand.value" formControlName="model">
                         <mat-option value="" disabled selected>
                         </mat-option>
-                        <mat-option *ngFor="let model of models" [value]="model.model">{{model.model}}</mat-option>
+                        <mat-option *ngFor="let model of models" [value]="model.name">{{model.name}}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -57,7 +57,6 @@
                     <input matInput [matDatepicker]="picker" formControlName="date">
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
-                    <!-- <ngx-mat-datetime-picker #picker></ngx-mat-datetime-picker> -->
                 </mat-form-field>
             </div>
         </div>
@@ -71,8 +70,8 @@
         <div>
                 <mat-button-toggle-group formControlName="status" aria-label="Font Style">
                     <mat-button-toggle value="U dolasku">U dolasku</mat-button-toggle>
-                    <mat-button-toggle [ngClass]="{'in-progress': status.value == 'U tijeku'}" value="U tijeku">U tijeku</mat-button-toggle>
-                    <mat-button-toggle [ngClass]="{'done': status.value == 'Završeno'}" value="Završeno">Završeno</mat-button-toggle>
+                    <mat-button-toggle [ngClass]="{'in-progress': status.value === 'U tijeku'}" value="U tijeku">U tijeku</mat-button-toggle>
+                    <mat-button-toggle [ngClass]="{'done': status.value === 'Završeno'}" value="Završeno">Završeno</mat-button-toggle>
                   </mat-button-toggle-group>
         </div>
     </div>

@@ -105,9 +105,31 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "proba:build:production",
+            "firebaseProject": "car-service-b1623",
+            "firebaseHostingSite": "car-service-b1623"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
   },
-  "defaultProject": "proba"
+  "defaultProject": "proba",
+  "cli": {
+    "defaultCollection": "@angular-eslint/schematics"
+  }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SpinnerService } from '../../services/spinner.service';
 
@@ -7,7 +7,7 @@ import { SpinnerService } from '../../services/spinner.service';
   templateUrl: './spinner.component.html',
   styleUrls: ['./spinner.component.scss']
 })
-export class SpinnerComponent implements OnInit {
+export class SpinnerComponent {
 
   loading$ = new Observable<boolean>();
 
@@ -15,9 +15,6 @@ export class SpinnerComponent implements OnInit {
     private _spinnerService: SpinnerService
   ) { 
     this.loading$ = this._spinnerService.spinner;
-  }
-
-  ngOnInit(): void {
   }
 
 }

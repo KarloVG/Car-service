@@ -1,14 +1,13 @@
-import { AfterContentInit, AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterContentInit, Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { BehaviorSubject, catchError, debounce, debounceTime, distinctUntilChanged, finalize, map, skip, Subject, take, tap } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, Subject, take } from 'rxjs';
 import { ITask } from '../dashboard/interface/task';
 import { ConfirmationDialogComponent } from '../shared/confirmation-dialog/confirmation-dialog.component';
 import { SpinnerService } from '../shared/services/spinner.service';
 import { WarehouseColumns } from './columns/warehouse-columns';
 import { IWarehouse } from './interface/warehouse';
-import { Warehouse } from './models/warehous';
 import { WarehouseService } from './services/warehouse.service';
 import { WarehouseDialogComponent } from './warehouse-dialog/warehouse-dialog.component';
 
@@ -17,7 +16,7 @@ import { WarehouseDialogComponent } from './warehouse-dialog/warehouse-dialog.co
   templateUrl: './warehouse.component.html',
   styleUrls: ['./warehouse.component.scss']
 })
-export class WarehouseComponent implements OnInit, AfterViewInit, AfterContentInit {
+export class WarehouseComponent implements OnInit, AfterContentInit {
 
   displayedColumns: string[] = WarehouseColumns;
   @ViewChild('sampleForm') form!: NgForm
@@ -25,12 +24,6 @@ export class WarehouseComponent implements OnInit, AfterViewInit, AfterContentIn
   loading$ = this.loadingSubject.asObservable();
   itemsSubject$: Subject<boolean> = new Subject();
   items = new MatTableDataSource<IWarehouse>();
-
-  // warehouseItems: IWarehouse = {
-  //   name: '',
-  //   pieces: null!
-
-  // }
 
   constructor(
     private _warehouseService: WarehouseService,
@@ -41,11 +34,9 @@ export class WarehouseComponent implements OnInit, AfterViewInit, AfterContentIn
   ngOnInit(): void {
     this.itemsSubject$.subscribe(res => {
       this._spinnerService.spinnerToggle(true)
-      // this.loadingSubject.next(true)
       this._warehouseService.getItems().pipe(
         finalize(() => this._spinnerService.spinnerToggle(false))
       ).subscribe(data => {
-        console.log(data)
         this.items.data = data;
       })
     })
@@ -82,9 +73,6 @@ export class WarehouseComponent implements OnInit, AfterViewInit, AfterContentIn
 
   ngAfterContentInit() {
     this.itemsSubject$.next(true);
-  }
-
-  ngAfterViewInit(): void {
   }
 
   // getItem(id: number) {

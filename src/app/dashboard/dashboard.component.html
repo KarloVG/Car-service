@@ -11,16 +11,6 @@
 </div>
   <mat-table [dataSource]="showToday ? filteredTasks : tasks" matSort matSortActive="date" matSortDirection="asc" class="mat-elevation-z8">
     
-    <!-- <ng-container matColumnDef="select">
-      <mat-header-cell *matHeaderCellDef>A da</mat-header-cell>
-      <mat-header-cell mat-cell *matCellDef="let row">
-        <mat-checkbox (click)="changeStatus(row)"
-        [indeterminate]="row.status == 'U tijeku' ? true : false"
-        [checked]="row.status == 'Završeno'">
-        </mat-checkbox>
-      </mat-header-cell>
-    </ng-container> -->
-    
     <!-- Position Column -->
     <ng-container matColumnDef="id">
       <mat-header-cell *matHeaderCellDef>No.</mat-header-cell>
@@ -60,7 +50,7 @@
     <!-- Name Column -->
     <ng-container matColumnDef="date">
       <mat-header-cell *matHeaderCellDef id="date" mat-sort-header>Datum</mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.date |date: 'dd/MM/yyyy'}} </mat-cell>
+      <mat-cell *matCellDef="let element"> {{element.date | date: 'dd/MM/yyyy'}} </mat-cell>
     </ng-container>
 
     <!-- Name Column -->
@@ -87,9 +77,9 @@
 
     <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"
-     [ngClass]="{'today-color': row.date == today,
-      'in-progress':row.status == 'U tijeku',
-       'done':row.status == 'Završeno',
+     [ngClass]="{'today-color': row.date === today,
+      'in-progress':row.status === 'U tijeku',
+       'done':row.status === 'Završeno',
       'expired':row.date < today}"></mat-row>
   </mat-table>
   <h3>Ukupno {{showToday ? filteredTasks.data.length : tasks.data.length}}</h3>

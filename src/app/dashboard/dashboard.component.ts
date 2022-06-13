@@ -1,49 +1,26 @@
 import { DatePipe } from '@angular/common';
-import { AfterContentInit, AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { BehaviorSubject, catchError, finalize, Subject, take } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, map, take } from 'rxjs';
 import { ConfirmationDialogComponent } from '../shared/confirmation-dialog/confirmation-dialog.component';
-import { SpinnerComponent } from '../shared/content-layout/spinner/spinner.component';
 import { SpinnerService } from '../shared/services/spinner.service';
 import { DashboardColumns } from './columns/dashboard-columns';
 import { DashboardDialogComponent } from './dashboard-dialog/dashboard-dialog.component';
+import { IResponse } from './interface/response';
+import { IStatus } from './interface/status';
 import { ITask } from './interface/task';
 import { DashboardService } from './services/dashboard.service';
-
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-];
-
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit, AfterViewInit, AfterContentInit {
+export class DashboardComponent implements OnInit {
 
   displayedColumns: string[] = DashboardColumns;
-  dataSource = ELEMENT_DATA;
-  // tasks!: ITask[];
-  // todaysDate = Date.now();
   todaysDate = new Date();
   today = new Date(this.todaysDate.getFullYear(), this.todaysDate.getMonth(), this.todaysDate.getDate(), 0,0,0).toISOString();
   showToday: boolean = true;
@@ -51,72 +28,66 @@ export class DashboardComponent implements OnInit, AfterViewInit, AfterContentIn
   filteredTasks = new MatTableDataSource<ITask>();
   loadingSubject = new BehaviorSubject<boolean>(false);
   loading$ = this.loadingSubject.asObservable();
-  tasksubject$: Subject<boolean> = new Subject();
   @ViewChild(MatSort) sort!: MatSort;
   pipe = new DatePipe('en-US')
 
   constructor(
     private _dashboardService: DashboardService,
     private _matDialog: MatDialog,
-    private _spinnerService: SpinnerService,
+    private _spinnerService: SpinnerService
   ) { }
 
   ngOnInit(): void {
-    // this.today = this.pipe.transform(this.todaysDate, 'dd/MM/yyyy')
-    // this.today = new Date(this.todaysDate.getFullYear(), this.todaysDate.getMonth(), this.todaysDate.getDate(), 0,0,0).toISOString()
-    console.log(this.today)
-    this.tasksubject$.subscribe(res => {
-      this._spinnerService.spinnerToggle(true)
-      this._dashboardService.getTasks().pipe(
-        finalize(() => this._spinnerService.spinnerToggle(false))
-      ).subscribe(data => {
-        this.tasks.data = data;
-        this.filteredTasks.data = this.tasks.data.filter(a => this.today == a.date)
-        // this.sort.sort({id: 'date', start: 'desc', disableClear: false})
-        this.tasks.sort = this.sort;
+    this.loadingSubject.next(true)
+    this._dashboardService.getTasks().pipe(map(data => {
+      return data.map((response: IResponse) => {
+        return {
+          id: response.payload.doc.id,
+          brand: response.payload.doc.data().brand,
+          date: response.payload.doc.data().date.toDate(),
+          desription: response.payload.doc.data().description,
+          job: response.payload.doc.data().job,
+          licensePlate: response.payload.doc.data().licensePlate,
+          model: response.payload.doc.data().model,
+          status: response.payload.doc.data().status,
+          title: response.payload.doc.data().title
+        }
       })
-    })
-    
-  }
-
-  ngAfterViewInit(): void {
-    // this.tasksubject$.next(true)
-  }
-
-  ngAfterContentInit(){
-    this.tasksubject$.next(true);
+    })).subscribe(data => {
+      this.tasks.data = data;
+      this.filteredTasks.data = this.tasks.data.filter(a => this.pipe.transform(this.today, 'dd/MM/yyyy')
+      === this.pipe.transform(a.date, 'dd/MM/yyyy'))
+      this.tasks.sort = this.sort});
+      this.loadingSubject.next(false)
   }
 
   dateFilter(event: any){
     this.showToday = !this.showToday
   }
 
-  changeStatus(a: any){
+  changeStatus(status: IStatus){
+    const data = {id: status.id, status: status.status};
     this._spinnerService.spinnerToggle(true)
-    if(a.status == 'U dolasku'){
-      a.status = 'U tijeku'
-      this._dashboardService.editTask(a).pipe(
-        take(1),
-        catchError(error => error),
-        finalize(() => this._spinnerService.spinnerToggle(false))
-      ).subscribe()
+    if(data.status == 'U dolasku'){
+      data.status = 'U tijeku'
+      this.editStatus(data);
     }
-    else if(a.status == 'U tijeku'){
-      a.status = 'Završeno'
-      this._dashboardService.editTask(a).pipe(
-        take(1),
-        catchError(error => error),
-        finalize(() => this._spinnerService.spinnerToggle(false))
-      ).subscribe()
+    else if(data.status == 'U tijeku'){
+      data.status = 'Završeno'
+      this.editStatus(data);
     }
     else{
-      a.status = 'U dolasku'
-      this._dashboardService.editTask(a).pipe(
-        take(1),
-        catchError(error => error),
-        finalize(() => this._spinnerService.spinnerToggle(false))
-      ).subscribe()
+      data.status = 'U dolasku'
+      this.editStatus(data);
     }
+  }
+
+  editStatus(data: IStatus){
+    this._dashboardService.editStatus(data).pipe(
+      take(1),
+      catchError(error => error),
+      finalize(() => this._spinnerService.spinnerToggle(false))
+    ).subscribe();
   }
 
   addOrEdit(row?: ITask){
@@ -126,10 +97,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, AfterContentIn
       width: '700px',
       data: row ? row : null
     })
-  dialogRef.afterClosed().subscribe(a => {
-    this._spinnerService.spinnerToggle(true)
-     this.tasksubject$.next(true);
-   })
   }
 
   deleteTask(row : ITask){
@@ -139,13 +106,9 @@ export class DashboardComponent implements OnInit, AfterViewInit, AfterContentIn
     })
     dialogRef.afterClosed().subscribe(a => {
       this._spinnerService.spinnerToggle(true)
-      this._dashboardService.deleteTask(row).pipe(
-        take(1),
-        catchError(error => error),
-        finalize(() => this.tasksubject$.next(true))
-      ).subscribe()
+      this._dashboardService.deleteTask(row.id).subscribe(() =>
+        this._spinnerService.spinnerToggle(false)
+      );
     })
-
   }
-
 }

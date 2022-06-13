@@ -23,8 +23,7 @@ export class WarehouseDialogComponent implements OnInit {
 
   ngOnInit(): void {
     if(this.row){
-      this.warehouseItems = this.row
-      console.log(this.warehouseItems)
+      this.warehouseItems = this.row;
     }
   }
   onSubmit() {
